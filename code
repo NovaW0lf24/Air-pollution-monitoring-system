@@ -1,0 +1,39 @@
+ consist int MQ135Pin = A0;
+consist int LEDPin = 13;
+consit int BuzzerPin= 12;
+
+int MQ135Value =0;
+float ppm = 0;
+int warningThreashold= 100;
+
+void setup()
+{
+    Serial.begin(9600);
+    pinMode(LEDPin, OUTPUT);
+    pinMode(BuzzerPin, OUTPUT);
+}
+
+void loop()
+{
+    MQ135Value = analogRead(MQ135Pin);
+    fload RsRoRatio= ((1023.0 / MQ135Value) -1);
+    ppm = pow(10, ((log10(RsRoRatio) - 0.153) / 0.47) + 1.34);
+
+    Serial.print("PPM: ");
+    Serial.println(ppm);
+
+    if(ppm > warningThreashold)
+    {
+        digitalWrite(LEDPin, HIGH);
+        digitalWrite(BuzzerPin, HIGH);
+
+        Serial.printl("Air pollutant level is above the warning threashold");
+    }
+    else
+    {
+        digitalWrite(LEDPin, LOW);
+        digitalWrite(BuzzerPin, LOW);
+    }
+
+    delay(3000);
+}
